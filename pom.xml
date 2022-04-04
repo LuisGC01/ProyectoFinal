@@ -12,7 +12,9 @@
 	<groupId>mx.unam.dgtic.diplomado</groupId>
 	<artifactId>proyecto</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<!-- para que funcione el despliegue en heroku -->
+	<packaging>jar</packaging>
+	<!-- <packaging>war</packaging> -->
 	<name>ProyectoFinal</name>
 	<description>Proyecto final del diplomado Desarrolo de sistemas con tecnologia java</description>
 	<properties>
