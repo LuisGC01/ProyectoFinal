@@ -12,7 +12,7 @@
 	<groupId>mx.unam.dgtic.diplomado</groupId>
 	<artifactId>proyecto</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<!-- para que funcione el despliegue en heroku -->
+	<!--para que funcione el despliegue en heroku -->
 	<packaging>jar</packaging>
 	<!-- <packaging>war</packaging> -->
 	<name>ProyectoFinal</name>
