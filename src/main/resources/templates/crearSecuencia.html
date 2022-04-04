@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+	integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+	crossorigin="anonymous">
+</head>
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link" th:href="@{/}">Home</a> <a class="nav-link"
+						th:href="@{/arreglos/}">Arreglos</a> <a class="nav-link active"
+						th:href="@{/secuencias/}">Secuencias</a>
+				</div>
+				<ul class="navbar-nav ml-md-auto">
+					<li sec:authorize="!isAuthenticated()"><a
+						class="btn btn-outline-primary" th:href="@{/login}">Iniciar Sesion</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown">
+						<a class="btn btn-outline-primary dropdown-toggle" href="#"
+							role="button" id="dropdownMenuLink" data-toggle="dropdown"
+							aria-expanded="false"><span sec:authentication="name"></span></a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+							<form id="logoutform" th:action="@{/logout}" method="post">
+								<button class="dropdown-item"
+									onclick="document.getElementById('logoutform').submit();"
+									type="submit">Cerrar Sesion</button>
+							</form>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+	<section class="container">
+		<h2>Crear secuencia</h2>
+		<form th:action="@{/secuencias/guardar}" th:object="${secuenciaMedicion}"
+			method="post" id="form_secuencia">
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label">Titulo</label>
+				<div class="col-sm-10">
+					<input type="text" maxlength="100" class="form-control" th:field="*{titulo}" required="required">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label">Descripcion</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" th:field="*{descripcion}">
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table id="tabla-detalles-secuencia"
+					class="table table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Tipo</th>
+							<th>Descripcion</th>
+							<th>Arreglo medicion</th>
+							<th>Valor</th>
+							<th>Barrido principal</th>
+							<th>Barrido secundario</th>
+							<th>Numero de mediciones</th>
+							<th>Instrucciones</th>
+							<th>Comentarios</th>
+							<th>Magnitud</th>
+							<th>Texto dialogo</th>
+							<th>Entrada dialogo</th>
+							<th>Validacion</th>
+							<th>eliminar</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+			<div class="col-sm-13" align="center">
+				<input type="submit" class="btn btn-success" value="Guardar">
+				<a class="btn btn-danger" th:href="@{/secuencias/}">Cancelar</a>
+			</div>
+		</form>
+
+		<div class="accordion" id="formularios_puntos">
+			<div class="">
+				<div id="headingOne" style="margin-top:1%;margin-bottom:1%;">
+					<button id="btn_p_d" type="button" class="btn btn-info col" data-toggle="collapse"
+						data-target="#div_punto_dialogo" aria-expanded="true"
+						aria-controls="div_punto_dialogo">Agregar punto de
+						dialogo</button>
+				</div>
+				<div id="div_punto_dialogo" class="collapse"
+					aria-labelledby="headingOne" data-parent="#formularios_puntos">
+					<h3>D</h3>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Descripcion</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="descripcion_d"
+								id="descripcion_d" required="required">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Arreglo de medicion</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_arr_d" id="sel_arr_d">
+								<option value=""></option>
+								<option th:each="a: ${arreglos}"
+									th:value="${a.idArregloMedicion}" th:text="${a.titulo}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Magnitud</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_magnitud_d" id="sel_magnitud_d">
+								<option value="" ></option>
+								<option th:each="m: ${magnitudes}"
+									th:class="${m.magnitudArreglo.modeloMatematico.arregloMedicion.titulo}"
+									th:value="${m.magnitudArreglo.idMagnitudArreglo}"
+									th:text="${m.magnitudArreglo.magnitud}" hidden></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Texto del dialogo</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="dialogotxt_d"
+								id="dialogotxt_d">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Entrada al dialogo</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="dialogoinp_d"
+								id="dialogoinp_d">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Validacion</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="dialogoval_d"
+								id="dialogoval_d">
+						</div>
+					</div>
+					<div class="col-sm-13">
+						<button type="button" name="btn-ptos-diag" id="btn-ptos-diag">Generar
+							Punto</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="">
+				<div id="headingTwo" style="margin-top:1%;margin-bottom:1%;">
+					<button id="btn_p_c" type="button" class="btn btn-info col" data-toggle="collapse"
+						data-target="#div_punto_control" aria-expanded="true"
+						aria-controls="div_punto_control">Agregar puntos de
+						control</button>
+				</div>
+				<div id="div_punto_control" class="collapse"
+					aria-labelledby="headingTwo" data-parent="#formularios_puntos">
+					<h3>C</h3>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Descripcion</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="descripcion_c"
+								id="descripcion_c" required="required">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Arreglo de medicion</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_arr_c" id="sel_arr_c">
+								<option th:each="a: ${arreglos}"
+									th:value="${a.idArregloMedicion}" th:text="${a.titulo}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Cantidad</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="cantidad_c"
+								id="cantidad_c" min="1" value="1">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Ciclos</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="ciclos_c"
+								id="ciclos_c" min="1" value="1">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Secuencia Principal</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_sec_prin_c" id="sel_sec_prin_c">
+								<option value="Ascendente">Ascendente</option>
+								<option value="Descendente">Descendente</option>
+								<option value="Ascendente mixto">Ascendente mixto</option>
+								<option value="Descendente mixto">Descendente mixto</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Secuencia
+							Secundaria</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_sec_sec_c" id="sel_sec_sec_c">
+								<option value="0°">0°</option>
+								<option value="90°">90°</option>
+								<option value="120°">120°</option>
+								<option value="180°">180°</option>
+								<option value="240°">240°</option>
+								<option value="270°">270°</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Distribucion</label>
+						<div class="col-sm-10">
+							<strong>0 a </strong><input type="number" class="form-control"
+								id="distribucion_c" name="distribucion_c" min="1" max="100"
+								value="100"><strong>%</strong>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Instrucciones</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="instrucciones_c"
+								id="instrucciones_c">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Comentarios</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="comentarios_c"
+								id="comentarios_c">
+						</div>
+					</div>
+					<div class="col-sm-13">
+						<button type="button" name="btn-ptos-control"
+							id="btn-ptos-control">Generar Punto</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="">
+				<div id="headingThree" style="margin-top:1%;margin-bottom:1%;">
+					<button id="btn_p_s" type="button" class="btn btn-info col" data-toggle="collapse"
+						data-target="#div_punto_directa" aria-expanded="true"
+						aria-controls="div_punto_directa">Agregar puntos de
+						secuencia directa</button>
+				</div>
+				<div id="div_punto_directa" class="collapse"
+					aria-labelledby="headingThree" data-parent="#formularios_puntos">
+					<h3>S</h3>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Descripcion</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="descripcion_s"
+								id="descripcion_s" required="required">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Arreglo de medicion</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_arr_s" id="sel_arr_s">
+								<option th:each="a: ${arreglos}"
+									th:value="${a.idArregloMedicion}" th:text="${a.titulo}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Cantidad</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="cantidad_s"
+								id="cantidad_s" min="1" value="1">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Ciclos</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="ciclos_s"
+								id="ciclos_s" min="1" value="1">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Numero de
+							mediciones</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="num_med_s"
+								id="num_med_s" min="1" value="1">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Secuencia Principal</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_sec_prin_s" id="sel_sec_prin_s">
+								<option value="Ascendente">Ascendente</option>
+								<option value="Descendente">Descendente</option>
+								<option value="Ascendente mixto">Ascendente mixto</option>
+								<option value="Descendente mixto">Descendente mixto</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Secuencia
+							Secundaria</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_sec_sec_s" id="sel_sec_sec_s">
+								<option value="0°">0°</option>
+								<option value="90°">90°</option>
+								<option value="120°">120°</option>
+								<option value="180°">180°</option>
+								<option value="240°">240°</option>
+								<option value="270°">270°</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Distribucion</label>
+						<div class="col-sm-10">
+							<strong>0 a </strong><input type="number" class="form-control"
+								name="distribucion_s" id="distribucion_s" min="1" max="100"
+								value="100"><strong>%</strong>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Instrucciones</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="instrucciones_s"
+								id="instrucciones_s">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Comentarios</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="comentarios_s"
+								id="comentarios_s">
+						</div>
+					</div>
+					<div class="col-sm-13">
+						<button type="button" name="btn-ptos-directa"
+							id="btn-ptos-directa">Generar Punto</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="m4">
+				<div id="headingFour" style="margin-top:1%;margin-bottom:1%;">
+					<button id="btn_p_i" type="button" class="btn btn-info col" data-toggle="collapse"
+						data-target="#div_punto_indirecta" aria-expanded="true"
+						aria-controls="div_punto_indirecta">Agregar puntos de
+						secuencia indirecta</button>
+				</div>
+				<div id="div_punto_indirecta" class="collapse"
+					aria-labelledby="headingFour" data-parent="#formularios_puntos">
+					<h3>I</h3>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Descripcion</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="descripcion_i"
+								id="descripcion_i" required="required">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Arreglo de medicion</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_arr_i" id="sel_arr_i">
+								<option th:each="a: ${arreglos}"
+									th:value="${a.idArregloMedicion}" th:text="${a.titulo}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Secuencia</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="sel_sec_i" id="sel_sec_i">
+								<option value="S.U.">S.U.</option>
+								<option value="U./S.">U./S.</option>
+								<option value="S.U.U.S.">S.U.U.S.</option>
+								<option value="S.U.S.">S.U.S.</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Ciclos</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="ciclos_i"
+								id="ciclos_i" min="1" value="1">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Instrucciones</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="instrucciones_i"
+								id="instrucciones_i">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Comentarios</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="comentarios_i"
+								id="comentarios_i">
+						</div>
+					</div>
+					<div class="col-sm-13">
+						<button type="button" name="btn-ptos-indirecta"
+							id="btn-ptos-indirecta">Generar Punto</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</section>
+	<script
+		src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+		integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#form_secuencia").submit(function(event) {
+				var nFilas = $("#tabla-detalles-secuencia tbody tr").length;
+				if (nFilas < 2) {
+					alert("Deben ser minimo 2 puntos.")
+					event.preventDefault();
+				}
+			});
+			$("#sel_arr_d").change(function() {
+				$("#sel_magnitud_d").val("");
+				$("#sel_magnitud_d option").each(function(index, element) {
+					$(element).removeAttr("hidden")
+					if ($(element).hasClass($("#sel_arr_d option:selected").text())) {
+						$(element).show();
+					} else {
+						$(element).hide();
+					}
+				});
+	
+			});
+			$("#btn-ptos-diag").click(function() {
+				$("#tabla-detalles-secuencia tbody").append('<tr><td><input type="text" name="arrTipos[]" required="required" value="D" readonly="readonly""/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_d").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_d").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="" readonly=""/></td> <td><input type="text" name="arrBarrPrin[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrComens[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrMag[]" value="' + $("#sel_magnitud_d").val() + '"/></td> <td><input type="text" name="arrTxtD[]" value="' + $("#dialogotxt_d").val() + '"/></td> <td><input type="text" name="arrInpD[]" value="' + $("#dialogoinp_d").val() + '"/></td> <td><input type="text" name="arrValid[]" value="' + $("#dialogoval_d").val() + '"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td></tr>');
+				$('.delete').off().click(function(e) {
+					$(this).parent('td').parent('tr').remove();
+				});
+				$("#btn_p_d").click();
+				$("#descripcion_d").val("");
+				$("#sel_arr_d").val("");
+				$("#sel_magnitud_d").val("");
+				$("#dialogotxt_d").val("");
+				$("#dialogoinp_d").val("");
+				$("#dialogoval_d").val("");
+			});
+			$("#btn-ptos-control").click(function() {
+				var pMin = 0;
+				var pMax = $("#distribucion_c").val();
+				var nPuntos = $("#cantidad_c").val();
+				var nRep = $("#ciclos_c").val();
+				var barridoP = $("#sel_sec_prin_c").val();
+				var porcentajeReal = pMax - pMin;
+				var saltoP = porcentajeReal / nPuntos;
+				var c = pMin;
+				var c2 = 0;
+				var arrPuntos = new Array();
+				while (c < porcentajeReal) {
+					c = saltoP * c2
+					arrPuntos[c2] = Math.round(c);
+					c2++;
+				}
+				if (barridoP == "Ascendente") {
+					for (var i = 0; i < nRep; i++) {
+						for (var j = 0; j < arrPuntos.length; j++) {
+							$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="C" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_c").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_c").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Ascendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_c").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_c").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_c").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+							$('.delete').off().click(function(e) {
+								$(this).parent('td').parent('tr').remove();
+							});
+						}
+					}
+	
+				} else if (barridoP == "Descendente") {
+					for (var i = 0; i < nRep; i++) {
+						for (var j = arrPuntos.length - 1; j >= 0; j--) {
+							$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="C" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_c").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_c").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Descendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_c").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_c").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_c").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+							$('.delete').off().click(function(e) {
+								$(this).parent('td').parent('tr').remove();
+							});
+						}
+					}
+				} else if (barridoP == "Ascendente mixto") {
+					for (var i = 0; i < nRep; i++) {
+						if (i % 2 == 0) {
+							for (var j = 0; j < arrPuntos.length; j++) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="C" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_c").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_c").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Ascendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_c").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_c").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_c").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						} else {
+							for (var j = arrPuntos.length - 1; j >= 0; j--) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="C" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_c").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_c").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Descendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_c").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_c").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_c").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						}
+					}
+				} else if (barridoP == "Descendente mixto") {
+					for (var i = 0; i < nRep; i++) {
+						if (i % 2 == 0) {
+							for (var j = arrPuntos.length - 1; j >= 0; j--) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="C" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_c").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_c").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Descendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_c").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_c").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_c").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						} else {
+							for (var j = 0; j < arrPuntos.length; j++) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="C" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_c").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_c").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Ascendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_c").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_c").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_c").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						}
+					}
+				}
+				$("#btn_p_c").click();
+				$("#descripcion_c").val("");
+				$("#cantidad_c").val("1");
+				$("#ciclos_c").val("1");
+				$("#distribucion_c").val("100");
+				$("#instrucciones_c").val("");
+				$("#comentarios_c").val("");
+			});
+			$("#btn-ptos-directa").click(function() {
+				var pMin = 0;
+				var pMax = $("#distribucion_s").val();
+				var nPuntos = $("#cantidad_s").val();
+				var nRep = $("#ciclos_s").val();
+				var barridoP = $("#sel_sec_prin_s").val();
+				var porcentajeReal = pMax - pMin;
+				var saltoP = porcentajeReal / nPuntos;
+				var c = pMin;
+				var c2 = 0;
+				var arrPuntos = new Array();
+				while (c < porcentajeReal) {
+					c = saltoP * c2
+					arrPuntos[c2] = Math.round(c);
+					c2++;
+				}
+				if (barridoP == "Ascendente") {
+					for (var i = 0; i < nRep; i++) {
+						for (var j = 0; j < arrPuntos.length; j++) {
+							$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="S" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_s").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Ascendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_s").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="' + $("#num_med_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_s").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_s").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+							$('.delete').off().click(function(e) {
+								$(this).parent('td').parent('tr').remove();
+							});
+						}
+					}
+	
+				} else if (barridoP == "Descendente") {
+					for (var i = 0; i < nRep; i++) {
+						for (var j = arrPuntos.length - 1; j >= 0; j++) {
+							$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="S" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_s").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Descendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_s").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="' + $("#num_med_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_s").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_s").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+							$('.delete').off().click(function(e) {
+								$(this).parent('td').parent('tr').remove();
+							});
+						}
+					}
+				} else if (barridoP == "Ascendente mixto") {
+					for (var i = 0; i < nRep; i++) {
+						if (i % 2 == 0) {
+							for (var j = 0; j < arrPuntos.length; j++) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="S" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_s").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Ascendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_s").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="' + $("#num_med_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_s").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_s").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						} else {
+							for (var j = arrPuntos.length - 1; j >= 0; j--) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="S" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_s").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Descendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_s").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="' + $("#num_med_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_s").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_s").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						}
+					}
+				} else if (barridoP == "Descendente mixto") {
+					for (var i = 0; i < nRep; i++) {
+						if (i % 2 == 0) {
+							for (var j = arrPuntos.length - 1; j >= 0; j--) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="S" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_s").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Descendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_s").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="' + $("#num_med_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_s").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_s").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						} else {
+							for (var j = 0; j < arrPuntos.length; j++) {
+								$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" required="required" value="S" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_s").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="' + arrPuntos[j] + '" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="Ascendente" readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="' + $("#sel_sec_sec_s").val() + '" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="' + $("#num_med_s").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_s").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_s").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+								$('.delete').off().click(function(e) {
+									$(this).parent('td').parent('tr').remove();
+								});
+							}
+						}
+					}
+				}
+				$("#btn_p_s").click();
+				$("#descripcion_s").val("");
+				$("#cantidad_s").val("1");
+				$("#ciclos_s").val("1");
+				$("#num_med_s").val("1");
+				$("#distribucion_s").val("100");
+				$("#instrucciones_s").val("");
+				$("#comentarios_s").val("");
+			});
+			$("#btn-ptos-indirecta").click(function() {
+				var nRep = $("#ciclos_i").val();
+				var secuencia = $("#sel_sec_i").val();
+				if (secuencia == "S.U.") {
+					for (var i = 0; i < nRep; i++) {
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="S" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="U" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$('.delete').off().click(function(e) {
+							$(this).parent('td').parent('tr').remove();
+						});
+					}
+				} else if (secuencia == "U./S.") {
+					for (var i = 0; i < nRep; i++) {
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="U" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="U./S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="S" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="U./S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$('.delete').off().click(function(e) {
+							$(this).parent('td').parent('tr').remove();
+						});
+					}
+				} else if (secuencia == "S.U.U.S.") {
+					for (var i = 0; i < nRep; i++) {
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="S" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="U" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="U" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="S" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$('.delete').off().click(function(e) {
+							$(this).parent('td').parent('tr').remove();
+						});
+					}
+				} else if (secuencia == "S.U.S.") {
+					for (var i = 0; i < nRep; i++) {
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="S" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="U" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$("#tabla-detalles-secuencia tbody").append(' <tr> <td><input type="text" name="arrTipos[]" value="I" required="required" readonly="readonly"/></td> <td><input type="text" name="arrDescs[]" value="' + $("#descripcion_i").val() + '"/></td> <td><input type="number" name="arrArrMed[]" value="' + $("#sel_arr_i").val() + '" readonly="readonly"/></td> <td><input type="text" name="arrVal[]" value="S" readonly="readonly"/></td> <td><input type="text" name="arrBarrPrin[]" value="S.U.S." readonly="readonly"/></td> <td><input type="text" name="arrBarrSec[]" value="" readonly="readonly"/></td> <td><input type="number" name="arrNumMed[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInst[]" value="' + $("#instrucciones_i").val() + '" /></td> <td><input type="text" name="arrComens[]" value="' + $("#comentarios_i").val() + '" /></td> <td><input type="number" name="arrMag[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrTxtD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrInpD[]" value="" readonly="readonly"/></td> <td><input type="text" name="arrValid[]" value="" readonly="readonly"/></td> <td><a href="#" class="delete btn btn-danger">Eliminar</a></td> </tr> ');
+						$('.delete').off().click(function(e) {
+							$(this).parent('td').parent('tr').remove();
+						});
+					}
+				}
+				$("#btn_p_i").click();
+				$("#descripcion_i").val("");
+				$("#ciclos_i").val("1");
+				$("#instrucciones_i").val("");
+				$("#comentarios_i").val("");
+			});
+		});
+	</script>
+</body>
+</html>

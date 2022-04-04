@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+	integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+	crossorigin="anonymous">
+</head>
+<body>
+
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link" th:href="@{/}">Home</a> <a class="nav-link"
+						th:href="@{/arreglos/}">Arreglos</a> <a class="nav-link active"
+						th:href="@{/secuencias/}">Secuencias</a>
+				</div>
+				<ul class="navbar-nav ml-md-auto">
+					<li sec:authorize="!isAuthenticated()"><a
+						class="btn btn-outline-primary" th:href="@{/login}">Iniciar Sesion</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown">
+						<a class="btn btn-outline-primary dropdown-toggle" href="#"
+							role="button" id="dropdownMenuLink" data-toggle="dropdown"
+							aria-expanded="false"><span sec:authentication="name"></span></a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+							<form id="logoutform" th:action="@{/logout}" method="post">
+								<button class="dropdown-item"
+									onclick="document.getElementById('logoutform').submit();"
+									type="submit">Cerrar Sesion</button>
+							</form>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+	<section class="container">
+		<h3 th:text="${secuenciaMedicion.titulo}"></h3>
+		<form action="" th:object="${secuenciaMedicion}">
+
+			<div>
+				<h4>Descripcion</h4>
+				<div>
+					<label th:text="*{descripcion}"></label>
+				</div>
+			</div>
+
+			<div
+				th:if="${secuenciaMedicion.secuenciaDetalles!=null and #lists.size(secuenciaMedicion.secuenciaDetalles)>0}">
+				<h5>Detalles</h5>
+				<div class="table-responsive">
+					<table class="table table-sm table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>N.</th>
+								<th>Tipo</th>
+								<th>Descripcion</th>
+								<th>Arreglo medicion</th>
+								<th>Valor</th>
+								<th>Barrido principal</th>
+								<th>Barrido secundario</th>
+								<th>Numero de mediciones</th>
+								<th>Instrucciones</th>
+								<th>Comentarios</th>
+								<th>Magnitud</th>
+								<th>Texto dialogo</th>
+								<th>Entrada dialogo</th>
+								<th>Validacion</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="sd: *{secuenciaDetalles}">
+								<td
+									th:text="${sd.numeroPuntoSecuencia!=null}?${sd.numeroPuntoSecuencia}:''"></td>
+								<td th:text="${sd.tipoPunto!=null}?${sd.tipoPunto}:''"></td>
+								<td
+									th:text="${sd.descripcionPunto!=null}?${sd.descripcionPunto}:''"></td>
+								<td
+									th:text="${sd.arregloMedicion!=null}?${sd.arregloMedicion.titulo}:''"></td>
+								<td th:text="${sd.valor!=null}?${sd.valor}:''"></td>
+								<td
+									th:text="${sd.barridoPrincipal!=null}?${sd.barridoPrincipal}:''"></td>
+								<td
+									th:text="${sd.barridoSecundario!=null}?${sd.barridoSecundario}:''"></td>
+								<td
+									th:text="${sd.numeroMediciones!=null}?${sd.numeroMediciones}:''"></td>
+								<td th:text="${sd.instrucciones!=null}?${sd.instrucciones}:''"></td>
+								<td th:text="${sd.comentario!=null}?${sd.comentario}:''"></td>
+								<td
+									th:text="${sd.magnitudArreglo!=null}?${sd.magnitudArreglo.magnitud}:''"></td>
+								<td th:text="${sd.dialogoTxt!=null}?${sd.dialogoTxt}:''"></td>
+								<td th:text="${sd.dialogoEntrada}?${sd.dialogoEntrada}:''"></td>
+								<td th:text="${sd.dialogoValidacion}?${sd.dialogoValidacion}:''"></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+
+		</form>
+		<div align="center">
+			<a th:href="@{/secuencias/}" class="btn btn-primary">Regresar</a>
+		</div>
+	</section>
+
+
+
+
+
+
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+		integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+		crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+	integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+	crossorigin="anonymous">
+</head>
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link" th:href="@{/}">Home</a> <a
+						class="nav-link active" th:href="@{/arreglos/}">Arreglos</a> <a
+						class="nav-link" th:href="@{/secuencias/}">Secuencias</a>
+				</div>
+				<ul class="navbar-nav ml-md-auto">
+					<li sec:authorize="!isAuthenticated()"><a
+						class="btn btn-outline-primary" th:href="@{/login}">Iniciar Sesion</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown">
+						<a class="btn btn-outline-primary dropdown-toggle" href="#"
+							role="button" id="dropdownMenuLink" data-toggle="dropdown"
+							aria-expanded="false"><span sec:authentication="name"></span></a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+							<form id="logoutform" th:action="@{/logout}" method="post">
+								<button class="dropdown-item"
+									onclick="document.getElementById('logoutform').submit();"
+									type="submit">Cerrar Sesion</button>
+							</form>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+	<section class="container">
+
+		<form th:action="@{/arreglos/siguiente/}" th:object="${magnitud}"
+			method="post">
+
+			<!-- 			<input type="hidden" th:field="*{magnitud}" th:value="*{magnitud}"> -->
+			<div class="form-group row">
+				<label class="col-2 col-form-label">Magnitud</label>
+				<div class="col-10">
+					<label class="col-form-label" th:text="*{magnitud}"></label>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-2 col-form-label">Unidad</label>
+				<div class="col-10">
+					<input class="form-control" type="text" maxlength="10" th:field="*{unidad}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-2 col-form-label">Definicion</label>
+				<div class="col-10">
+					<input class="form-control" maxlength="30" type="text" th:field="*{definicion}">
+				</div>
+			</div>
+
+			<div th:if="*{magnitudDetalle != null}">
+
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Capturar</label>
+					<div class="col-10">
+						<input class="form-control" type="checkbox" th:field="*{capturar}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Repetir</label>
+					<div class="col-10">
+						<input class="form-control" type="checkbox" th:field="*{repetir}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Asociado</label>
+					<div class="col-10">
+						<input class="form-control" maxlength="10" type="text" th:field="*{asociado}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Descripcion</label>
+					<div class="col-10">
+						<input class="form-control" type="text" th:field="*{magnitudDetalle.descripcion}">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Tipo</label>
+					<div class="col-10">
+						<select class="form-control" id="sel_tipo" name="sel_tipo"
+							th:field="*{magnitudDetalle.tipo}">
+							<option value="Tipo A">Tipo A</option>
+							<option value="Tipo A resumido">Tipo A resumido</option>
+							<option value="Tipo B">Tipo B</option>
+							<option value="Constante">Constante</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="form-group row" id="div_dist">
+					<label class="col-2 col-form-label">Distribucion</label>
+					<div class="col-10">
+						<select class="form-control" id="sel_dist" name="sel_dist"
+							th:field="*{magnitudDetalle.distribucion}">
+							<option value=""></option>
+							<option value="Normal">Normal</option>
+							<option value="Rectangular">Rectangular</option>
+							<option value="Forma U">Forma U</option>
+							<option value="Triangular">Triangular</option>
+							<option value="Trapezoidal">Trapezoidal</option>
+							<option value="Cuadrativa">Cuadrativa</option>
+							<option value="Coseno">Coseno</option>
+							<option value="Coseno medio">Coseno medio</option>
+							<option value="T">T</option>
+							<option value="Rayleigh">Rayleigh</option>
+							<option value="Poisson">Poisson</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="form-group row" id="div_eval_inc">
+					<label class="col-2 col-form-label">Evaluacion de incertidumbre</label>
+					<div class="col-10">
+						<select class="form-control" id="sel_eval_inc" name="sel_eval_inc"
+							th:field="*{magnitudDetalle.evaluacionIncertidumbre}">
+							<option value=""></option>
+							<option value="Estandar">Estandar</option>
+							<option value="Experimental">Experimental</option>
+							<option value="Estimacion Agrupada">Estimacion Agrupada</option>
+							<option value="Bayesiano">Bayesiano</option>
+							<option value="Bayesiano Agrupado">Bayesiano Agrupado</option>
+						</select>
+					</div>
+
+
+				</div>
+				<div class="form-group row" id="div_met_obs">
+					<label class="col-2 col-form-label">Metodo Observacion</label>
+					<div class="col-10">
+						<select class="form-control" id="sel_met_obs" name="sel_met_obs"
+							th:field="*{magnitudDetalle.metodoObservacion}">
+							<option value=""></option>
+							<option value="Directa">Directa</option>
+							<option value="Indirecta S.U.">Indirecta S.U.</option>
+							<option value="Indirecta U./S.">Indirecta U./S.</option>
+							<option value="Indirecta S.U.S.">Indirecta S.U.S.</option>
+							<option value="Indirecta S.U.U.S.">Indirecta S.U.U.S.</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="form-group row" id="div_val">
+					<label class="col-2 col-form-label">Valor</label>
+					<div class="col-10">
+						<input class="form-control" type="number" step="any" id="inp_val"
+							th:field="*{magnitudDetalle.valor}">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Imagen</label>
+					<div class="col-10">
+						<input class="form-control-file" required="required" type="file" th:field="*{magnitudDetalle.imagen.imagen}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Leyenda</label>
+					<div class="col-10">
+						<input class="form-control" type="text" th:field="*{magnitudDetalle.imagen.leyenda}">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-2 col-form-label">Descripcion</label>
+					<div class="col-10">
+						<input class="form-control" type="text"
+							th:field="*{magnitudDetalle.imagen.descripcion}">
+					</div>
+				</div>
+
+			</div>
+
+			<div align="center" class="">
+				<input class="btn btn-success" type="submit" value="Siguiente">
+				<a class="btn btn-danger" th:href="@{/arreglos/}">Cancelar</a>
+			</div>
+
+
+		</form>
+
+	</section>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+		integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+		crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		$("#div_dist").hide();
+		$("#div_val").hide();
+		$("#sel_tipo").change(function() {
+			var tipo = $("#sel_tipo").val();
+			if (tipo == "Tipo A") {
+				$("#div_met_obs").show();
+				$("#div_eval_inc").show();
+				$("#div_dist").hide();
+				$("#sel_dist").val("")
+				$("#div_val").hide();
+				$("#inp_val").val("")
+			} else if (tipo == "Tipo A resumido") {
+				$("#div_met_obs").hide();
+				$("#sel_met_obs").val("")
+				$("#div_eval_inc").show();
+				$("#div_dist").hide();
+				$("#sel_dist").val("")
+				$("#div_val").hide();
+				$("#inp_val").val("")
+			} else if (tipo == "Tipo B") {
+				$("#div_met_obs").hide();
+				$("#sel_met_obs").val("")
+				$("#div_eval_inc").hide();
+				$("#sel_eval_inc").val("")
+				$("#div_dist").show();
+				$("#div_val").hide();
+				$("#inp_val").val("")
+			} else if (tipo == "Constante") {
+				$("#div_met_obs").hide();
+				$("#sel_met_obs").val("")
+				$("#div_eval_inc").hide();
+				$("#sel_eval_inc").val("")
+				$("#div_dist").hide();
+				$("#sel_dist").val("")
+				$("#div_val").show();
+			}
+		});
+
+		$("#sel_eval_inc").change(function() {
+			var tipo = $("#sel_eval_inc").val();
+			if ((tipo == "Bayesiano") || (tipo == "Bayesiano Agrupado")) {
+				$("#div_dist").show();
+			} else {
+				$("#div_dist").hide();
+				$("#sel_dist").val("")
+			}
+		});
+	</script>
+
+
+
+
+</body>
+</html>

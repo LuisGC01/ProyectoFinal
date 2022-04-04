@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+	integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+	crossorigin="anonymous">
+</head>
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link" th:href="@{/}">Home</a> <a
+						class="nav-link active" th:href="@{/arreglos/}">Arreglos</a> <a
+						class="nav-link" th:href="@{/secuencias/}">Secuencias</a>
+				</div>
+				<ul class="navbar-nav">
+					<li sec:authorize="!isAuthenticated()"><a
+						class="btn btn-outline-primary" th:href="@{/login}">Iniciar Sesion</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown">
+						<a class="btn btn-outline-primary dropdown-toggle" href="#"
+							role="button" id="dropdownMenuLink" data-toggle="dropdown"
+							aria-expanded="false"><span sec:authentication="name"></span></a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+							<form id="logoutform" th:action="@{/logout}" method="post">
+								<button class="dropdown-item"
+									onclick="document.getElementById('logoutform').submit();"
+									type="submit">Cerrar Sesion</button>
+							</form>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+	<section class="container-md">
+		<h2>Vista previa del arreglo de medicion</h2>
+		<form th:action="@{/arreglos/guardar}" th:object="${arreglo}"
+			method="post">
+					<div class="card">
+				<h3 class="card-title" th:text="*{titulo}"></h3>
+				<div class="card-body">
+					<div class="">
+						<h4 class="card-subtitle">Version</h4>
+						<div class="">
+							<label class="" th:text="*{version}"></label>
+						</div>
+					</div>
+					<div class="">
+						<h4 class="card-subtitle">Descripcion</h4>
+						<div class="">
+							<label class="" th:text="*{descripcion}"></label>
+						</div>
+					</div>
+					<div class="">
+						<h4 class="card-subtitle">Formato Cal-cert</h4>
+						<div class="">
+							<label class="" th:text="*{formatoCalCert}"></label>
+						</div>
+					</div>
+					<div class="">
+						<h4 class="card-subtitle">Imagen</h4>
+						<div class="">
+							<label class="" th:text="*{imagen.imagen}"></label>
+						</div>
+					</div>
+					<div class="">
+						<h4 class="card-subtitle">Leyenda de la imagen</h4>
+						<div class="">
+							<label class="" th:text="*{imagen.leyenda}"></label>
+						</div>
+					</div>
+					<div class="">
+						<h4 class="card-subtitle">Descripcion de la imagen</h4>
+						<div class="">
+							<label class="" th:text="*{imagen.descripcion}"></label>
+						</div>
+					</div>
+					<div class="">
+						<h4 class="card-subtitle">Ecuacion</h4>
+						<div class="">
+							<label class="" th:text="*{modeloMatematico.ecuacion}"></label>
+						</div>
+					</div>
+
+					<div class="">
+
+						<h4 class="card-subtitle">Derivadas</h4>
+						<div th:each="d :*{modeloMatematico.derivadasModeloMatematico}"
+							class="border">
+							<label class="" th:text="'d'+'('+${f}+')/d('+${d.respectoA}+')='"></label><label
+								class="" th:text="${d.derivadaParcial}"></label>
+						</div>
+
+					</div>
+
+					<div class="">
+						<h3>Magnitudes</h3>
+						<div class="border border-success my-2 p-2"
+							th:each="m :*{modeloMatematico.magnitudesArreglo}">
+							<div class="">
+								<h4 class="card-subtitle">Magnitud:</h4>
+								<div>
+									<label class="" th:text="${m.magnitud}"></label>
+								</div>
+							</div>
+							<div class="">
+								<h4 class="card-subtitle">Unidad:</h4>
+								<div>
+									<label class="" th:text="${m.unidad}"></label>
+								</div>
+							</div>
+							<div class="">
+								<h4 class="card-subtitle">Definicion:</h4>
+								<div>
+									<label class="" th:text="${m.definicion}"></label>
+								</div>
+							</div>
+							<div th:if="${m.magnitudDetalle != null}">
+								<div class="">
+									<h4 class="card-subtitle">Capturar:</h4>
+									<div>
+										<label class="" th:text="${m.capturar}"></label>
+									</div>
+								</div>
+								<div class="">
+									<h4 class="card-subtitle">Repetir:</h4>
+									<div>
+										<label class="" th:text="${m.repetir}"></label>
+									</div>
+								</div>
+								<div class="">
+									<h4 class="card-subtitle">Asociado:</h4>
+									<div>
+										<label class="" th:text="${m.asociado}"></label>
+									</div>
+								</div>
+								<div class="border bg-light">
+									<div class="">
+										<h4 class="card-subtitle">Descripcion:</h4>
+										<div>
+											<label class="" th:text="${m.magnitudDetalle.descripcion}"></label>
+										</div>
+									</div>
+									<div class="">
+										<h4 class="card-subtitle">Tipo:</h4>
+										<div>
+											<label class="" th:text="${m.magnitudDetalle.tipo}"></label>
+										</div>
+									</div>
+									<div class=""
+										th:if="${ #strings.equals(m.magnitudDetalle.tipo, 'Tipo B') || ( #strings.equals(m.magnitudDetalle.tipo, 'Tipo A resumido') and (#strings.equals(m.magnitudDetalle.tipo, 'Tipo A resumido') and (#strings.equals(m.magnitudDetalle.evaluacionIncertidumbre, 'Bayesiano') || #strings.equals(m.magnitudDetalle.evaluacionIncertidumbre, 'Bayesiano Agrupado') ) ) ) }">
+										<h4 class="card-subtitle">Distribucion:</h4>
+										<div>
+											<label class="" th:text="${m.magnitudDetalle.distribucion}"></label>
+										</div>
+									</div>
+									<div class=""
+										th:if="${#strings.equals(m.magnitudDetalle.tipo, 'Tipo A') || #strings.equals(m.magnitudDetalle.tipo, 'Tipo A resumido')}">
+										<h4 class="card-subtitle">Evaluacion de incertidumbre:</h4>
+										<div>
+											<label class=""
+												th:text="${m.magnitudDetalle.evaluacionIncertidumbre}"></label>
+										</div>
+									</div>
+									<div class=""
+										th:if="${#strings.equals(m.magnitudDetalle.tipo, 'Tipo A')}">
+										<h4 class="card-subtitle">Metodo de observacion:</h4>
+										<div>
+											<label class=""
+												th:text="${m.magnitudDetalle.metodoObservacion}"></label>
+										</div>
+									</div>
+									<div class=" "
+										th:if="${#strings.equals(m.magnitudDetalle.tipo, 'Constante')}">
+										<h4 class="card-subtitle">Valor:</h4>
+										<div>
+											<label class="" th:text="${m.magnitudDetalle.valor}"></label>
+										</div>
+									</div>
+									<div class=" ">
+										<h4 class="card-subtitle">Imagen:</h4>
+										<div>
+											<label class="" th:text="${m.magnitudDetalle.imagen.imagen}"></label>
+										</div>
+									</div>
+									<div class=" ">
+										<h4 class="card-subtitle">Leyenda:</h4>
+										<div>
+											<label class="" th:text="${m.magnitudDetalle.imagen.leyenda}"></label>
+										</div>
+									</div>
+									<div class=" ">
+										<h4 class="card-subtitle">Descripcion de la imagen:</h4>
+										<div>
+											<label class=""
+												th:text="${m.magnitudDetalle.imagen.descripcion}"></label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div align="center">
+				<input class="btn btn-success" type="submit" value="Guardar"> <a
+					class="btn btn-danger" th:href="@{/arreglos/}">Cancelar</a>
+			</div>
+		</form>
+	</section>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+		integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+		crossorigin="anonymous"></script>
+
+
+</body>
+</html>
