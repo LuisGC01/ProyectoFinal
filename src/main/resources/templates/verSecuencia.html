@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Secuencia de medicion </title>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
 	integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
@@ -17,30 +17,41 @@
 					<a class="nav-link" th:href="@{/}">Home</a> <a class="nav-link"
 						th:href="@{/arreglos/}">Arreglos</a> <a class="nav-link active"
 						th:href="@{/secuencias/}">Secuencias</a>
-				</div>
-				<ul class="navbar-nav ml-md-auto">
-					<li sec:authorize="!isAuthenticated()"><a
-						class="btn btn-outline-primary" th:href="@{/login}">Iniciar Sesion</a></li>
-					<li sec:authorize="isAuthenticated()" class="dropdown">
-						<a class="btn btn-outline-primary dropdown-toggle" href="#"
+					<ul class="navbar-nav ml-md-auto">
+						<li sec:authorize="!isAuthenticated()"><a
+							class="btn btn-outline-primary" th:href="@{/login}">Iniciar
+								Sesion</a></li>
+						<li sec:authorize="isAuthenticated()" class="dropdown"><a
+							class="btn btn-outline-primary dropdown-toggle" href="#"
 							role="button" id="dropdownMenuLink" data-toggle="dropdown"
 							aria-expanded="false"><span sec:authentication="name"></span></a>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-							<form id="logoutform" th:action="@{/logout}" method="post">
-								<button class="dropdown-item"
-									onclick="document.getElementById('logoutform').submit();"
-									type="submit">Cerrar Sesion</button>
-							</form>
-						</div>
-					</li>
-				</ul>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								<form id="logoutform" th:action="@{/logout}" method="post">
+									<button class="dropdown-item"
+										onclick="document.getElementById('logoutform').submit();"
+										type="submit">Cerrar Sesion</button>
+								</form>
+							</div></li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 	</header>
 	<section class="container">
 		<h3 th:text="${secuenciaMedicion.titulo}"></h3>
 		<form action="" th:object="${secuenciaMedicion}">
-
+			<div class="">
+				<h4 class="card-subtitle">Fecha de cracion</h4>
+				<div class="">
+					<label class="" th:text="*{{fecha}}"></label>
+				</div>
+			</div>
+			<div class="">
+				<h4 class="card-subtitle">Creador</h4>
+				<div class="">
+					<label class="" th:text="*{usuario.nombreUsuario}"></label>
+				</div>
+			</div>
 			<div>
 				<h4>Descripcion</h4>
 				<div>
@@ -104,6 +115,8 @@
 		</form>
 		<div align="center">
 			<a th:href="@{/secuencias/}" class="btn btn-primary">Regresar</a>
+			<a class="btn btn-danger" target="_blank" th:href="@{'/secuencias/ver/'+${secuenciaMedicion.idSecuenciaMedicion} (format=pdf)}">Exportar a PDF</a>
+			<a class="btn btn-success" target="_blank" th:href="@{'/secuencias/ver/'+${secuenciaMedicion.idSecuenciaMedicion} (format=xlsx)}">Exportar a XLSX</a>
 		</div>
 	</section>
 

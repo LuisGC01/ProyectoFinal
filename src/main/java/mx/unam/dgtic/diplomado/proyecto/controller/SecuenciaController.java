@@ -135,7 +135,6 @@ public class SecuenciaController {
 							((arrMag[i] != null && arrMag[i] > 0) ? new MagnitudArreglo(arrMag[i]) : null)));
 		}
 
-		System.out.println(secuenciaMedicion);
 		secuenciaService.actualizarSecuencia(secuenciaMedicion);
 		status.setComplete();
 		return "redirect:/secuencias/";
@@ -160,14 +159,14 @@ public class SecuenciaController {
 
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_USER")
 	@RequestMapping("/pdf")
 	public String pdf(Model model) {
 		model.addAttribute("secuencias", secuenciaService.findAll());
 		return "secuenciasPdfView";
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_USER")
 	@RequestMapping("/xlsx")
 	public String xlsx(Model model) {
 		model.addAttribute("secuencias", secuenciaService.findAll());

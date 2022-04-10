@@ -27,7 +27,7 @@ public class ArreglosPdfView extends AbstractPdfView {
 
 		List<ArregloMedicion> arreglos = (List<ArregloMedicion>) model.get("arreglos");
 		PdfPTable table = new PdfPTable(5);
-		table.addCell("N� arreglo");
+		table.addCell("N° arreglo");
 		table.addCell("Titulo");
 		table.addCell("Version");
 		table.addCell("Fecha");

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Define secuencia</title>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
 	integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
@@ -16,23 +16,23 @@
 					<a class="nav-link" th:href="@{/}">Home</a> <a class="nav-link"
 						th:href="@{/arreglos/}">Arreglos</a> <a class="nav-link active"
 						th:href="@{/secuencias/}">Secuencias</a>
-				</div>
-				<ul class="navbar-nav ml-md-auto">
-					<li sec:authorize="!isAuthenticated()"><a
-						class="btn btn-outline-primary" th:href="@{/login}">Iniciar Sesion</a></li>
-					<li sec:authorize="isAuthenticated()" class="dropdown">
-						<a class="btn btn-outline-primary dropdown-toggle" href="#"
+					<ul class="navbar-nav ml-md-auto">
+						<li sec:authorize="!isAuthenticated()"><a
+							class="btn btn-outline-primary" th:href="@{/login}">Iniciar
+								Sesion</a></li>
+						<li sec:authorize="isAuthenticated()" class="dropdown"><a
+							class="btn btn-outline-primary dropdown-toggle" href="#"
 							role="button" id="dropdownMenuLink" data-toggle="dropdown"
 							aria-expanded="false"><span sec:authentication="name"></span></a>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-							<form id="logoutform" th:action="@{/logout}" method="post">
-								<button class="dropdown-item"
-									onclick="document.getElementById('logoutform').submit();"
-									type="submit">Cerrar Sesion</button>
-							</form>
-						</div>
-					</li>
-				</ul>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								<form id="logoutform" th:action="@{/logout}" method="post">
+									<button class="dropdown-item"
+										onclick="document.getElementById('logoutform').submit();"
+										type="submit">Cerrar Sesion</button>
+								</form>
+							</div></li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 	</header>
@@ -76,21 +76,20 @@
 					<tbody></tbody>
 				</table>
 			</div>
-			<div class="col-sm-13" align="center">
+			<div class="col-sm-13 my-3" align="center">
 				<input type="submit" class="btn btn-success" value="Guardar">
 				<a class="btn btn-danger" th:href="@{/secuencias/}">Cancelar</a>
 			</div>
 		</form>
-
-		<div class="accordion" id="formularios_puntos">
-			<div class="">
-				<div id="headingOne" style="margin-top:1%;margin-bottom:1%;">
-					<button id="btn_p_d" type="button" class="btn btn-info col" data-toggle="collapse"
-						data-target="#div_punto_dialogo" aria-expanded="true"
-						aria-controls="div_punto_dialogo">Agregar punto de
-						dialogo</button>
+		<div class="accordion my-3" id="formularios_puntos">
+			<div class="bg-light">
+				<div id="headingOne" style="margin-top: 1%; margin-bottom: 1%;">
+					<button id="btn_p_d" type="button" class="btn btn-info col"
+						data-toggle="collapse" data-target="#div_punto_dialogo"
+						aria-expanded="true" aria-controls="div_punto_dialogo">Agregar
+						punto de dialogo</button>
 				</div>
-				<div id="div_punto_dialogo" class="collapse"
+				<div id="div_punto_dialogo" class="collapse mx-3"
 					aria-labelledby="headingOne" data-parent="#formularios_puntos">
 					<h3>D</h3>
 					<div class="form-group row">
@@ -113,8 +112,9 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Magnitud</label>
 						<div class="col-sm-10">
-							<select class="form-control" name="sel_magnitud_d" id="sel_magnitud_d">
-								<option value="" ></option>
+							<select class="form-control" name="sel_magnitud_d"
+								id="sel_magnitud_d">
+								<option value=""></option>
 								<option th:each="m: ${magnitudes}"
 									th:class="${m.magnitudArreglo.modeloMatematico.arregloMedicion.titulo}"
 									th:value="${m.magnitudArreglo.idMagnitudArreglo}"
@@ -143,21 +143,20 @@
 								id="dialogoval_d">
 						</div>
 					</div>
-					<div class="col-sm-13">
-						<button type="button" name="btn-ptos-diag" id="btn-ptos-diag">Generar
-							Punto</button>
+					<div class="col-sm-13" style="padding-bottom: 1%;">
+						<button type="button" name="btn-ptos-diag" id="btn-ptos-diag"
+							class="col-sm-12 btn btn-warning">Generar Punto</button>
 					</div>
 				</div>
 			</div>
-
-			<div class="">
-				<div id="headingTwo" style="margin-top:1%;margin-bottom:1%;">
-					<button id="btn_p_c" type="button" class="btn btn-info col" data-toggle="collapse"
-						data-target="#div_punto_control" aria-expanded="true"
-						aria-controls="div_punto_control">Agregar puntos de
-						control</button>
+			<div class="bg-light">
+				<div id="headingTwo" style="margin-top: 1%; margin-bottom: 1%;">
+					<button id="btn_p_c" type="button" class="btn btn-info col"
+						data-toggle="collapse" data-target="#div_punto_control"
+						aria-expanded="true" aria-controls="div_punto_control">Agregar
+						puntos de control</button>
 				</div>
-				<div id="div_punto_control" class="collapse"
+				<div id="div_punto_control" class="collapse mx-3"
 					aria-labelledby="headingTwo" data-parent="#formularios_puntos">
 					<h3>C</h3>
 					<div class="form-group row">
@@ -193,7 +192,8 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Secuencia Principal</label>
 						<div class="col-sm-10">
-							<select class="form-control" name="sel_sec_prin_c" id="sel_sec_prin_c">
+							<select class="form-control" name="sel_sec_prin_c"
+								id="sel_sec_prin_c">
 								<option value="Ascendente">Ascendente</option>
 								<option value="Descendente">Descendente</option>
 								<option value="Ascendente mixto">Ascendente mixto</option>
@@ -205,7 +205,8 @@
 						<label class="col-sm-2 col-form-label">Secuencia
 							Secundaria</label>
 						<div class="col-sm-10">
-							<select class="form-control" name="sel_sec_sec_c" id="sel_sec_sec_c">
+							<select class="form-control" name="sel_sec_sec_c"
+								id="sel_sec_sec_c">
 								<option value="0°">0°</option>
 								<option value="90°">90°</option>
 								<option value="120°">120°</option>
@@ -237,21 +238,21 @@
 								id="comentarios_c">
 						</div>
 					</div>
-					<div class="col-sm-13">
+					<div class="col-sm-13" style="padding-bottom: 1%;">
 						<button type="button" name="btn-ptos-control"
-							id="btn-ptos-control">Generar Punto</button>
+							class="col-sm-12 btn btn-warning" id="btn-ptos-control">Generar
+							Punto</button>
 					</div>
 				</div>
 			</div>
-
-			<div class="">
-				<div id="headingThree" style="margin-top:1%;margin-bottom:1%;">
-					<button id="btn_p_s" type="button" class="btn btn-info col" data-toggle="collapse"
-						data-target="#div_punto_directa" aria-expanded="true"
-						aria-controls="div_punto_directa">Agregar puntos de
-						secuencia directa</button>
+			<div class="bg-light">
+				<div id="headingThree" style="margin-top: 1%; margin-bottom: 1%;">
+					<button id="btn_p_s" type="button" class="btn btn-info col"
+						data-toggle="collapse" data-target="#div_punto_directa"
+						aria-expanded="true" aria-controls="div_punto_directa">Agregar
+						puntos de secuencia directa</button>
 				</div>
-				<div id="div_punto_directa" class="collapse"
+				<div id="div_punto_directa" class="collapse mx-3"
 					aria-labelledby="headingThree" data-parent="#formularios_puntos">
 					<h3>S</h3>
 					<div class="form-group row">
@@ -295,7 +296,8 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Secuencia Principal</label>
 						<div class="col-sm-10">
-							<select class="form-control" name="sel_sec_prin_s" id="sel_sec_prin_s">
+							<select class="form-control" name="sel_sec_prin_s"
+								id="sel_sec_prin_s">
 								<option value="Ascendente">Ascendente</option>
 								<option value="Descendente">Descendente</option>
 								<option value="Ascendente mixto">Ascendente mixto</option>
@@ -307,7 +309,8 @@
 						<label class="col-sm-2 col-form-label">Secuencia
 							Secundaria</label>
 						<div class="col-sm-10">
-							<select class="form-control" name="sel_sec_sec_s" id="sel_sec_sec_s">
+							<select class="form-control" name="sel_sec_sec_s"
+								id="sel_sec_sec_s">
 								<option value="0°">0°</option>
 								<option value="90°">90°</option>
 								<option value="120°">120°</option>
@@ -339,21 +342,21 @@
 								id="comentarios_s">
 						</div>
 					</div>
-					<div class="col-sm-13">
+					<div class="col-sm-13" style="padding-bottom: 1%;">
 						<button type="button" name="btn-ptos-directa"
-							id="btn-ptos-directa">Generar Punto</button>
+							class="col-sm-12 btn btn-warning" id="btn-ptos-directa">Generar
+							Punto</button>
 					</div>
 				</div>
 			</div>
-
-			<div class="m4">
-				<div id="headingFour" style="margin-top:1%;margin-bottom:1%;">
-					<button id="btn_p_i" type="button" class="btn btn-info col" data-toggle="collapse"
-						data-target="#div_punto_indirecta" aria-expanded="true"
-						aria-controls="div_punto_indirecta">Agregar puntos de
-						secuencia indirecta</button>
+			<div class="bg-light">
+				<div id="headingFour" style="margin-top: 1%; margin-bottom: 1%;">
+					<button id="btn_p_i" type="button" class="btn btn-info col"
+						data-toggle="collapse" data-target="#div_punto_indirecta"
+						aria-expanded="true" aria-controls="div_punto_indirecta">Agregar
+						puntos de secuencia indirecta</button>
 				</div>
-				<div id="div_punto_indirecta" class="collapse"
+				<div id="div_punto_indirecta" class="collapse mx-3"
 					aria-labelledby="headingFour" data-parent="#formularios_puntos">
 					<h3>I</h3>
 					<div class="form-group row">
@@ -404,12 +407,12 @@
 								id="comentarios_i">
 						</div>
 					</div>
-					<div class="col-sm-13">
+					<div class="col-sm-13" style="padding-bottom: 1%;">
 						<button type="button" name="btn-ptos-indirecta"
-							id="btn-ptos-indirecta">Generar Punto</button>
+							class="col-sm-12 btn btn-warning" id="btn-ptos-indirecta">Generar
+							Punto</button>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</section>

@@ -25,7 +25,7 @@ public class ArreglosXlsxView extends AbstractXlsxView {
 		response.setHeader("Content-Disposition", "attachment; filename=\"arreglos.xlsx\"");
 		Sheet sheet = workbook.createSheet();
 		Row header = sheet.createRow(0);
-		header.createCell(0).setCellValue("N� arreglo");
+		header.createCell(0).setCellValue("N° arreglo");
 		header.createCell(1).setCellValue("Titulo");
 		header.createCell(2).setCellValue("Fecha");
 		header.createCell(3).setCellValue("Version");

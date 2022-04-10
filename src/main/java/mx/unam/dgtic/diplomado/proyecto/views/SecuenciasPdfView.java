@@ -27,11 +27,11 @@ public class SecuenciasPdfView extends AbstractPdfView {
 
 		List<SecuenciaMedicion> secuencias = (List<SecuenciaMedicion>) model.get("secuencias");
 		PdfPTable table = new PdfPTable(5);
-		table.addCell("N� arreglo");
+		table.addCell("N° arreglo");
 		table.addCell("Titulo");
 		table.addCell("Fecha");
 		table.addCell("Creador");
-		table.addCell("N� puntos");
+		table.addCell("N puntos");
 		for (SecuenciaMedicion secuenciaMedicion : secuencias) {
 			table.addCell(secuenciaMedicion.getIdSecuenciaMedicion().toString());
 			table.addCell(secuenciaMedicion.getTitulo());

@@ -212,7 +212,6 @@ public class ArregloController {
 		System.out.println(arreglo.getFormatoCalCert().length());
 
 		if ((arreglo.getFormatoCalCert() != null) && (arreglo.getFormatoCalCert().length() > 1)) {
-			System.out.println("if fcc");
 			amArregloMedicion.setFormatoCalCert(arreglo.getFormatoCalCert());
 		}
 		if ((arreglo.getImagen().getImagen() != null) && (arreglo.getImagen().getImagen().length() > 1)) {
@@ -220,17 +219,12 @@ public class ArregloController {
 		}
 		amArregloMedicion.getImagen().setLeyenda(arreglo.getImagen().getLeyenda());
 		amArregloMedicion.getImagen().setDescripcion(arreglo.getImagen().getDescripcion());
-		amArregloMedicion.setUsuario(new Usuario(1));
 		System.out.println(arreglo.getModeloMatematico().getEcuacion());
-		;
 		System.out.println(amArregloMedicion.getModeloMatematico().getEcuacion());
-		;
 		if (amArregloMedicion.getModeloMatematico().getEcuacion().equals(arreglo.getModeloMatematico().getEcuacion())) {
-			System.out.println("if");
 			arregloService.actualizarArreglo(amArregloMedicion);
 			return new ModelAndView("redirect:/arreglos/");
 		} else {
-			System.out.println("else");
 			alMagnitudes = new ArrayList<MagnitudArreglo>();
 			arregloService.deleteDerivadasByModeloMatematico(amArregloMedicion.getModeloMatematico());
 			arregloService.deleteMagnitudesByModeloMatematico(amArregloMedicion.getModeloMatematico());
@@ -247,14 +241,14 @@ public class ArregloController {
 		return "redirect:/arreglos/";
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_USER")
 	@RequestMapping("/pdf")
 	public String pdf(Model model) {
 		model.addAttribute("arreglos", arregloService.findAll());
 		return "arreglosPdfView";
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_USER")
 	@RequestMapping("/xlsx")
 	public String xlsx(Model model) {
 		model.addAttribute("arreglos", arregloService.findAll());
